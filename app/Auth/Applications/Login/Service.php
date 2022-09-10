@@ -13,9 +13,8 @@ class Service
 
     public function run(): Output
     {
-        $key = 'sample';
         return new Output(
-            token: $this->authRepository->createToken($key)->plainTextToken
+            token: $this->authRepository->getToken()
         );
     }
 }

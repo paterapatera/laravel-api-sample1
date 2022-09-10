@@ -3,6 +3,7 @@
 namespace App\Auth\Domains\Auth;
 
 use App\Models\User;
+use RuntimeException;
 
 class Auth
 {
@@ -23,5 +24,17 @@ class Auth
         }
 
         return $this;
+    }
+
+    /**
+     * @return array{TwoFactorSecret, TwoFactorRecoveryCodes}
+     */
+    public function getTwoFactor(): array
+    {
+        if (is_null($this->twoFactorRecoveryCodes) || is_null($this->twoFactorSecret)) {
+            throw new RuntimeException('2段階認証が無効になっているので取得できません');
+        }
+
+        return [$this->twoFactorSecret, $this->twoFactorRecoveryCodes];
     }
 }

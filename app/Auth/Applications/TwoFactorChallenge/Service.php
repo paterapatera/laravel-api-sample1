@@ -6,6 +6,8 @@ use App\Auth\Domains\Auth\Auth;
 use App\Auth\Domains\Auth\TwoFactorRecoveryCode;
 use App\Auth\Domains\Auth\Repository;
 use App\Auth\Domains\Auth\TwoFactorConfirmer;
+use App\Auth\Domains\Auth\TwoFactorRecoveryCodes;
+use App\Auth\Domains\Auth\TwoFactorSecret;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
@@ -23,21 +25,20 @@ class Service
 
     public function run(Input $input): Output
     {
-        $auth = $this->getAuthOrFail($input);
+        $auth = $this->getAuth($input);
 
         $this->confirmTwoFactor($input, $auth);
 
-        $this->replaceIfValidRecovery($input, $auth);
+        $this->replaceRecoveryCodeIfValid($input, $auth);
 
         $this->guard->login($auth->user);
 
-        $key = 'sample';
         return new Output(
-            token: $this->authRepository->createToken($key)->plainTextToken
+            token: $this->authRepository->getToken()
         );
     }
 
-    private function getAuthOrFail(Input $input): Auth
+    private function getAuth(Input $input): Auth
     {
         $exception = ValidationException::withMessages(['email' => [trans('auth.failed')]]);
         try {
@@ -53,8 +54,10 @@ class Service
 
     private function confirmTwoFactor(Input $input, Auth $auth): void
     {
-        $isValidRecovery = TwoFactorConfirmer::isValidRecovery($input->recoveryCode, $auth->twoFactorRecoveryCodes);
-        $isValidCode = fn () => TwoFactorConfirmer::isValid($input->code, $auth->twoFactorSecret, $this->tfaProvider);
+        [$twoFactorSecret, $twoFactorRecoveryCodes] = $auth->getTwoFactor();
+
+        $isValidRecovery = TwoFactorConfirmer::isValidRecovery($input->recoveryCode, $twoFactorRecoveryCodes);
+        $isValidCode = fn () => TwoFactorConfirmer::isValid($input->code, $twoFactorSecret, $this->tfaProvider);
 
         if (!$isValidRecovery && !$isValidCode()) {
             [$key, $message] = $input->recoveryCode
@@ -65,10 +68,11 @@ class Service
         }
     }
 
-    private function replaceIfValidRecovery(Input $input, Auth $auth): void
+    private function replaceRecoveryCodeIfValid(Input $input, Auth $auth): void
     {
-        $isValidRecovery = TwoFactorConfirmer::isValidRecovery($input->recoveryCode, $auth->twoFactorRecoveryCodes);
-        if ($isValidRecovery) {
+        [, $twoFactorRecoveryCodes] = $auth->getTwoFactor();
+        $isValidRecovery = TwoFactorConfirmer::isValidRecovery($input->recoveryCode, $twoFactorRecoveryCodes);
+        if ($input->recoveryCode && $isValidRecovery) {
             $newCode = new TwoFactorRecoveryCode(FortifyRecoveryCode::generate());
             $auth->replaceRecoveryCode($input->recoveryCode, $newCode);
         }

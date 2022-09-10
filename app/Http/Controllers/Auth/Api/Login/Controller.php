@@ -22,6 +22,7 @@ class Controller extends ApiController
 
     public function __invoke(Request $request): JsonResponse
     {
+        /** @var JsonResponse */
         return (new Pipeline(app()))->send($request)->through(array_filter([
             EnsureLoginIsNotThrottled::class,
             ResponseIfTwoFactorAuthenticatable::class,

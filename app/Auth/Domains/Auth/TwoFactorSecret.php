@@ -15,6 +15,7 @@ class TwoFactorSecret
 
     public function decrypt(): string
     {
+        /** @var string */
         return decrypt($this->value);
     }
 }

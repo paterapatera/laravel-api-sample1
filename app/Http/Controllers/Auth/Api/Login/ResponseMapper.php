@@ -9,7 +9,7 @@ class ResponseMapper
     static public function toResponse(Output $output): array
     {
         return [
-            'token' => $output->token,
+            'token' => $output->token->token,
             'twoFactor' => $output->twoFactor,
         ];
     }

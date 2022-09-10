@@ -4,7 +4,7 @@ if (!function_exists('valmap')) {
     /**
      * @template T
      * @template U
-     * @param T $value
+     * @param T|null $value
      * @param callable (T):U $callback
      * @param U|null|callable ():U $default
      * @return U|null 
@@ -39,5 +39,15 @@ if (!function_exists('valmapOrFail')) {
         }
 
         return $callback($value);
+    }
+}
+
+
+if (!function_exists('t')) {
+    function t(string $value, array $replace = [], ?string $locale = null): string
+    {
+        /** @var ?string */
+        $str = trans($value, $replace, $locale);
+        return $str ?? '';
     }
 }

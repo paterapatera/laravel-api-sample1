@@ -33,15 +33,15 @@ class TestMessage extends Notification
     /**
      * メール通知用の文章
      */
-    public function toMail($notifiable): MailMessage
+    public function toMail(mixed $notifiable): MailMessage
     {
         return (new MailMessage())
-            ->greeting(trans('Reset Password Notification'))
-            ->subject(trans('Reset Password Notification'))
-            ->line(trans('You are receiving this email because we received a password reset request for your account.'))
+            ->greeting(t('Reset Password Notification'))
+            ->subject(t('Reset Password Notification'))
+            ->line(t('You are receiving this email because we received a password reset request for your account.'))
             ->line('CODE : ')
-            ->line(trans('This password reset link will expire in :count minutes.', ['count' => config('auth.passwords.' . config('auth.defaults.passwords') . '.expire')]))
-            ->line(trans('If you did not request a password reset, no further action is required.'));
+            ->line(t('This password reset link will expire in :count minutes.', ['count' => config('auth.passwords.' . config('auth.defaults.passwords') . '.expire')]))
+            ->line(t('If you did not request a password reset, no further action is required.'));
         // return (new MailMessage)->markdown(
         //     'emails.name.html',
         //     ['invoice' => $this->invoice]
@@ -51,7 +51,7 @@ class TestMessage extends Notification
     /**
      * DB通知用
      */
-    public function toArray($notifiable): array
+    public function toArray(mixed $notifiable): array
     {
         return [];
     }

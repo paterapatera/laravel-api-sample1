@@ -15,9 +15,19 @@ class TwoFactorRecoveryCodes
         return $this->value;
     }
 
+    public function toJson(): string
+    {
+        /** @var string */
+        return decrypt($this->value);
+    }
+
+    /**
+     * @return Collection<int, TwoFactorRecoveryCode>
+     */
     public function decrypt(): Collection
     {
-        $decCodes = json_decode(decrypt($this->value), true);
+        /** @var array */
+        $decCodes = json_decode($this->toJson(), true);
         return collect($decCodes)
             ->map(fn ($code) => new TwoFactorRecoveryCode($code));
     }
@@ -32,7 +42,7 @@ class TwoFactorRecoveryCodes
         return new TwoFactorRecoveryCodes(encrypt(str_replace(
             $code->value(),
             $newCode->value(),
-            decrypt($this->value)
+            $this->toJson()
         )));
     }
 }
