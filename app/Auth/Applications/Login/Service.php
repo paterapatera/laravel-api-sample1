@@ -3,6 +3,7 @@
 namespace App\Auth\Applications\Login;
 
 use App\Auth\Domains\Auth\Repository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class Service
 {
@@ -13,8 +14,11 @@ class Service
 
     public function run(): Output
     {
-        return new Output(
-            token: $this->authRepository->getToken()
-        );
+        try {
+            $token = $this->authRepository->getToken();
+        } catch (ModelNotFoundException $e) {
+            $token = $this->authRepository->createToken()->accessToken;
+        }
+        return new Output($token);
     }
 }

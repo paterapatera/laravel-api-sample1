@@ -33,9 +33,12 @@ class Service
 
         $this->guard->login($auth->user);
 
-        return new Output(
-            token: $this->authRepository->getToken()
-        );
+        try {
+            $token = $this->authRepository->getToken();
+        } catch (ModelNotFoundException $e) {
+            $token = $this->authRepository->createToken()->accessToken;
+        }
+        return new Output($token);
     }
 
     private function getAuth(Input $input): Auth

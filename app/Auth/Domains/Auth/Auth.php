@@ -3,12 +3,14 @@
 namespace App\Auth\Domains\Auth;
 
 use App\Models\User;
+use Laravel\Sanctum\PersonalAccessToken;
 use RuntimeException;
 
 class Auth
 {
     public ?TwoFactorRecoveryCodes $twoFactorRecoveryCodes;
     public ?TwoFactorSecret $twoFactorSecret;
+    public ?PersonalAccessToken $accessToken;
 
     public function __construct(
         public Email $email,
