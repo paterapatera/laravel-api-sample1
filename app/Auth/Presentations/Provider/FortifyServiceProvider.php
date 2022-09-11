@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Providers;
+namespace App\Auth\Presentations\Provider;
 
 use App\Auth\Actions\CreateNewUser;
 use App\Auth\Actions\ResetUserPassword;
@@ -38,13 +38,13 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
         RateLimiter::for('login', function (Request $request) {
-            $email = (string) $request->email;
+            $email = strval($request->email);
 
             return Limit::perMinute(5)->by($email . $request->ip());
         });
 
         RateLimiter::for('two-factor', function (Request $request) {
-            $key = $request->wantsJson() ? (string) $request->email . $request->ip() : $request->session()->get('login.id');
+            $key = $request->wantsJson() ? strval($request->email) . $request->ip() : $request->session()->get('login.id');
 
             return Limit::perMinute(5)->by($key);
         });
@@ -62,7 +62,7 @@ class FortifyServiceProvider extends ServiceProvider
         Route::group([
             'prefix' => 'api',
         ], function () {
-            $this->loadRoutesFrom(__DIR__ . '/../../routes/auth.php');
+            $this->loadRoutesFrom(__DIR__ . '/../../../../routes/auth.php');
         });
     }
 }

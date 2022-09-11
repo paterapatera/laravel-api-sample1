@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth\Api\Logout;
+namespace App\Auth\Presentations\Api\Logout;
 
 use App\Auth\Applications\Logout\Service;
 use App\Http\Controllers\ApiController;

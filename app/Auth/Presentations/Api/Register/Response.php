@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth\Api\Register;
+namespace App\Auth\Presentations\Api\Register;
 
 use App\Models\User;
 use Illuminate\Http\JsonResponse;

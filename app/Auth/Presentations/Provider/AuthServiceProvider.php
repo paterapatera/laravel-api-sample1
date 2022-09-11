@@ -1,18 +1,15 @@
 <?php
 
-namespace App\Providers;
+namespace App\Auth\Presentations\Provider;
 
 // use Illuminate\Support\Facades\Gate;
 
 use App\Auth\Domains;
 use App\Auth\Infras;
-use App\Http\Controllers\Auth\Api\Register\Response;
-use App\Mail\TMail;
+use App\Auth\Presentations\Api\Register\Response;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Support\Facades\Lang;
-use Illuminate\Support\Facades\Mail;
 use Laravel\Fortify\Contracts\RegisterResponse;
 
 class AuthServiceProvider extends ServiceProvider
@@ -36,12 +33,12 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
         ResetPassword::toMailUsing(function ($notifiable, $token) {
             return (new MailMessage())
-                ->greeting(trans('Reset Password Notification'))
-                ->subject(trans('Reset Password Notification'))
-                ->line(trans('You are receiving this email because we received a password reset request for your account.'))
+                ->greeting(t('Reset Password Notification'))
+                ->subject(t('Reset Password Notification'))
+                ->line(t('You are receiving this email because we received a password reset request for your account.'))
                 ->line('CODE : ' . $token)
-                ->line(trans('This password reset link will expire in :count minutes.', ['count' => config('auth.passwords.' . config('auth.defaults.passwords') . '.expire')]))
-                ->line(trans('If you did not request a password reset, no further action is required.'));
+                ->line(t('This password reset link will expire in :count minutes.', ['count' => config('auth.passwords.' . config('auth.defaults.passwords') . '.expire')]))
+                ->line(t('If you did not request a password reset, no further action is required.'));
         });
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth\Api\Login;
+namespace App\Auth\Presentations\Api\Login;
 
 use Laravel\Fortify\Events\TwoFactorAuthenticationChallenged;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable as FortifyRedirectIfTwoFactorAuthenticatable;

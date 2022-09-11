@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth\Api\TwoFactorChallenge;
+namespace App\Auth\Presentations\Api\TwoFactorChallenge;
 
 use App\Auth\Applications\TwoFactorChallenge\Input;
 use App\Auth\Domains\Auth\Email;
