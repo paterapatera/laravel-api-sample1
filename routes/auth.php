@@ -1,6 +1,7 @@
 <?php
 
 use App\Auth\Presentations\Api;
+use App\Auth\Presentations\Api\TwoFactorChallenge\TwoFactorAuthenticatedSessionController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Http\Controllers\ConfirmablePasswordController;
@@ -70,9 +71,9 @@ Route::group(['middleware' => ['api']], function () {
         ->name('password.confirm');
 
     // Two Factor Authentication...
-    Route::post('/two-factor-challenge', Api\TwoFactorChallenge\Controller::class)
+    Route::post('/two-factor-challenge', [TwoFactorAuthenticatedSessionController::class, 'store'])
         ->middleware(array_filter([
-            'guest:sanctum',
+            'guest:' . config('fortify.guard'),
             $twoFactorLimiter ? 'throttle:' . $twoFactorLimiter : null,
         ]));
 

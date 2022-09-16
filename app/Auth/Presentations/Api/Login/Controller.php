@@ -2,9 +2,9 @@
 
 namespace App\Auth\Presentations\Api\Login;
 
-use App\Auth\Applications\Login\Service;
 use App\Http\Controllers\ApiController;
 use App\Http\Responses\Api;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Pipeline;
@@ -15,7 +15,6 @@ use Laravel\Fortify\LoginRateLimiter;
 class Controller extends ApiController
 {
     public function __construct(
-        private Service $service,
         private LoginRateLimiter  $limiter
     ) {
     }
@@ -29,7 +28,12 @@ class Controller extends ApiController
             AttemptToAuthenticate::class,
             [$this, 'clearLimiter'],
         ]))->then(function () {
-            return Api::ok(ResponseMapper::toResponse($this->service->run()));
+            /** @var User */
+            $user = auth()->user();
+            return Api::ok([
+                'token' => $user->createToken('login')->plainTextToken,
+                'twoFactor' => false,
+            ]);
         });
     }
 

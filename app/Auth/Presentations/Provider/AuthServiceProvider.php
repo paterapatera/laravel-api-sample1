@@ -4,13 +4,13 @@ namespace App\Auth\Presentations\Provider;
 
 // use Illuminate\Support\Facades\Gate;
 
-use App\Auth\Domains;
-use App\Auth\Infras;
-use App\Auth\Presentations\Api\Register\Response;
+use App\Auth\Presentations\Api\Register;
+use App\Auth\Presentations\Api\TwoFactorChallenge;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Notifications\Messages\MailMessage;
 use Laravel\Fortify\Contracts\RegisterResponse;
+use Laravel\Fortify\Contracts\TwoFactorLoginResponse;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -44,7 +44,7 @@ class AuthServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->app->singleton(Domains\Auth\Repository::class, Infras\Auth\Repository::class);
-        $this->app->singleton(RegisterResponse::class, Response::class);
+        $this->app->singleton(RegisterResponse::class, Register\Response::class);
+        $this->app->singleton(TwoFactorLoginResponse::class, TwoFactorChallenge\Response::class);
     }
 }
